@@ -1,0 +1,160 @@
+[gd_scene load_steps=21 format=3 uid="uid://b4mdqdxt7f6y2"]
+
+[ext_resource type="Script" uid="uid://b556as2kvv6ta" path="res://character_body_3d.gd" id="1_o200l"]
+[ext_resource type="PackedScene" uid="uid://d4mkkmh5wjdti" path="res://DRAGONCHARACTERS/GOKUFINBASE/glb/gokufinbase_heredado.tscn" id="2_o200l"]
+[ext_resource type="Script" uid="uid://bpww1iiowcv5j" path="res://skill_simple_1.gd" id="3_77m02"]
+[ext_resource type="Script" uid="uid://drpsdqmjvh23t" path="res://jump.gd" id="3_e8ceb"]
+[ext_resource type="Script" uid="uid://cc17ljaw3u7qy" path="res://caer.gd" id="4_gs8qk"]
+[ext_resource type="Script" uid="uid://dfynynhxevgux" path="res://skill_simple_2.gd" id="4_rbf2x"]
+[ext_resource type="Script" uid="uid://c5x1a5uwqya1k" path="res://simple_damage.gd" id="5_ao18m"]
+[ext_resource type="Script" uid="uid://dy7yjikh23pob" path="res://area_arm_left.gd" id="5_o0guk"]
+[ext_resource type="Script" uid="uid://cs540v3e1qxhf" path="res://estado_generico.gd" id="6_77m02"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gs8qk"]
+radius = 4.449707
+height = 15.604004
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_o200l"]
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_e8ceb"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_o200l"]
+animation = &"000_ground_anm"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_e8ceb"]
+animation = &"003_move_far_loop_anm"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_gs8qk"]
+animation = &"005_move_far_l_loop_anm"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_o0guk"]
+animation = &"007_move_far_r_loop_anm"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8j42b"]
+animation = &"003_move_far_loop_anm"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_gs8qk"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_o200l")
+blend_point_0/pos = Vector2(0, 0)
+blend_point_1/node = SubResource("AnimationNodeAnimation_e8ceb")
+blend_point_1/pos = Vector2(0, 0.90000004)
+blend_point_2/node = SubResource("AnimationNodeAnimation_gs8qk")
+blend_point_2/pos = Vector2(-1, 0)
+blend_point_3/node = SubResource("AnimationNodeAnimation_o0guk")
+blend_point_3/pos = Vector2(1, 0)
+blend_point_4/node = SubResource("AnimationNodeAnimation_8j42b")
+blend_point_4/pos = Vector2(0, -0.90000004)
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_e8ceb"]
+graph_offset = Vector2(-122.34125, 11.448715)
+nodes/output/position = Vector2(1340, 240)
+nodes/normal_piso/node = SubResource("AnimationNodeBlendSpace2D_gs8qk")
+nodes/normal_piso/position = Vector2(320, 80)
+nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_e8ceb")
+nodes/TimeScale/position = Vector2(960, 180)
+node_connections = [&"output", 0, &"TimeScale", &"TimeScale", 0, &"normal_piso"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8j42b"]
+size = Vector3(2.3427734, 6.378479, 2.5303345)
+
+[node name="CharacterBody3D" type="CharacterBody3D"]
+script = ExtResource("1_o200l")
+speed = 50
+velocidad_gravity_inicial = 8
+velocidad_max_gravity = 130
+aceleration_gravity = 1.5
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="Node3D" type="Node3D" parent="Pivot"]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="personaje_glb" parent="Pivot/Node3D" instance=ExtResource("2_o200l")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.9074097, 0)
+shape = SubResource("CapsuleShape3D_gs8qk")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9986259, 0.052405685, 0, -0.052405685, 0.9986259, 0, 10.076527, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+shape = SubResource("SphereShape3D_o200l")
+spring_length = 30.0
+
+[node name="Node3D" type="Node3D" parent="CameraPivot/SpringArm3D"]
+
+[node name="CameraSubPivot" type="Node3D" parent="CameraPivot/SpringArm3D/Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D/Node3D/CameraSubPivot"]
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+active = false
+root_node = NodePath("../Pivot/Node3D/personaje_glb")
+tree_root = SubResource("AnimationNodeBlendTree_e8ceb")
+anim_player = NodePath("../Pivot/Node3D/personaje_glb/AnimationPlayer")
+parameters/normal_piso/blend_position = Vector2(0, 0)
+parameters/TimeScale/scale = 2.5
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="estados" type="Node3D" parent="."]
+
+[node name="skill_simple_1" type="Node3D" parent="estados" node_paths=PackedStringArray("skillContinueNode")]
+script = ExtResource("3_77m02")
+colisionTipo = "bone_right"
+timeCotinueNextSkill = 0.2
+skillContinueNode = NodePath("../skill_simple_2")
+cool_down = 10
+
+[node name="skill_simple_2" type="Node3D" parent="estados"]
+script = ExtResource("4_rbf2x")
+animationName = "056_strike_02_anm"
+estadoName = "skill_simple_2"
+colisionActiveRanges = [[0.1, 0.5]]
+timeCotinueNextSkill = 0.2
+inputActive = false
+estadosIn = ["normal", "correr", "skill_simple_1"]
+cool_down = 1
+
+[node name="jump" type="Node3D" parent="estados"]
+script = ExtResource("3_e8ceb")
+aceleration_jump = 12
+timeSalto = 27
+
+[node name="caer" type="Node3D" parent="estados"]
+script = ExtResource("4_gs8qk")
+timeCayendoSecondAnim = 30
+timeStartAterrizajeAnim = 1
+
+[node name="simple_damage" type="Node3D" parent="estados"]
+script = ExtResource("5_ao18m")
+estadoName = "simple_damage"
+
+[node name="estado_generico" type="Node3D" parent="estados"]
+script = ExtResource("6_77m02")
+
+[node name="areas" type="Node3D" parent="."]
+
+[node name="area_arm_left" type="Area3D" parent="areas"]
+script = ExtResource("5_o0guk")
+pegar_hueso = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="areas/area_arm_left"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3434143, 0)
+shape = SubResource("BoxShape3D_8j42b")
+
+[node name="area_arm_right" type="Area3D" parent="areas"]
+script = ExtResource("5_o0guk")
+pegar_hueso = true
+nombre_hueso = "020_ELBOW_R"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="areas/area_arm_right"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8764038, 0)
+shape = SubResource("BoxShape3D_8j42b")
+
+[editable path="Pivot/Node3D/personaje_glb"]

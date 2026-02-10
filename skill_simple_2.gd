@@ -1,0 +1,1 @@
+extends estado_skill_simple

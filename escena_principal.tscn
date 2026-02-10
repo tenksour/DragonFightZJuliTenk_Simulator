@@ -1,0 +1,92 @@
+[gd_scene load_steps=12 format=3 uid="uid://kra05e5bj7eu"]
+
+[ext_resource type="PackedScene" uid="uid://b4mdqdxt7f6y2" path="res://character_body_3d_pj.tscn" id="1_jdg2m"]
+[ext_resource type="Texture2D" uid="uid://dyr3hxj8vyngt" path="res://debugtext.png" id="1_r0811"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hcujj"]
+albedo_texture = ExtResource("1_r0811")
+uv1_scale = Vector3(8.86, 6.895, 6.895)
+
+[sub_resource type="BoxMesh" id="BoxMesh_r0811"]
+material = SubResource("StandardMaterial3D_hcujj")
+size = Vector3(100, 1, 100)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_hcujj"]
+data = PackedVector3Array(-50, 0.5, 50, 50, 0.5, 50, -50, -0.5, 50, 50, 0.5, 50, 50, -0.5, 50, -50, -0.5, 50, 50, 0.5, -50, -50, 0.5, -50, 50, -0.5, -50, -50, 0.5, -50, -50, -0.5, -50, 50, -0.5, -50, 50, 0.5, 50, 50, 0.5, -50, 50, -0.5, 50, 50, 0.5, -50, 50, -0.5, -50, 50, -0.5, 50, -50, 0.5, -50, -50, 0.5, 50, -50, -0.5, -50, -50, 0.5, 50, -50, -0.5, 50, -50, -0.5, -50, 50, 0.5, 50, -50, 0.5, 50, 50, 0.5, -50, -50, 0.5, 50, -50, 0.5, -50, 50, 0.5, -50, -50, -0.5, 50, 50, -0.5, 50, -50, -0.5, -50, 50, -0.5, 50, 50, -0.5, -50, -50, -0.5, -50)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rftnj"]
+albedo_texture = ExtResource("1_r0811")
+uv1_scale = Vector3(1.578, 1.28, 0.921)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jdg2m"]
+material = SubResource("StandardMaterial3D_rftnj")
+size = Vector3(100, 100, 100)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_r0811"]
+data = PackedVector3Array(-50, 50, 50, 50, 50, 50, -50, -50, 50, 50, 50, 50, 50, -50, 50, -50, -50, 50, 50, 50, -50, -50, 50, -50, 50, -50, -50, -50, 50, -50, -50, -50, -50, 50, -50, -50, 50, 50, 50, 50, 50, -50, 50, -50, 50, 50, 50, -50, 50, -50, -50, 50, -50, 50, -50, 50, -50, -50, 50, 50, -50, -50, -50, -50, 50, 50, -50, -50, 50, -50, -50, -50, 50, 50, 50, -50, 50, 50, 50, 50, -50, -50, 50, 50, -50, 50, -50, 50, 50, -50, -50, -50, 50, 50, -50, 50, -50, -50, -50, 50, -50, 50, 50, -50, -50, -50, -50, -50)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r0811"]
+
+[sub_resource type="Sky" id="Sky_hcujj"]
+sky_material = SubResource("ProceduralSkyMaterial_r0811")
+
+[sub_resource type="Environment" id="Environment_jdg2m"]
+background_mode = 2
+background_color = Color(0, 0.43742338, 0.5434584, 1)
+background_energy_multiplier = 1.41
+sky = SubResource("Sky_hcujj")
+ambient_light_source = 2
+ambient_light_color = Color(0.53078234, 0.5089711, 0.53549796, 1)
+ambient_light_energy = 1.5
+glow_intensity = 2.06
+glow_strength = 1.13
+glow_bloom = 0.01
+glow_blend_mode = 0
+fog_light_energy = 1.85
+
+[node name="Node3D" type="Node3D"]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(6.205, 0, 0, 0, 6.205, 0, 0, 0, 6.205, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4640149, 0)
+mesh = SubResource("BoxMesh_r0811")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4640149, 0)
+shape = SubResource("ConcavePolygonShape3D_hcujj")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -354.57172, 50.62404, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 280.47223, -68.498215, 0)
+mesh = SubResource("BoxMesh_jdg2m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 280.47223, -68.498215, 0)
+shape = SubResource("ConcavePolygonShape3D_r0811")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.33509052, 0.40208736, 0.8520799, -0.14177875, -0.8725482, 0.46750236, 0.9314576, -0.2774624, -0.23537518, 27.513075, 20.640026, 0)
+light_color = Color(0.9558415, 0.87937224, 0.8906153, 1)
+light_energy = 0.395
+directional_shadow_max_distance = 1378.3
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.9885391, -0.14954223, 0.020686835, -0.14177877, -0.8725483, 0.46750256, -0.051861256, -0.46507743, -0.8837497, 27.513075, 20.640026, 0)
+light_energy = 0.68
+shadow_enabled = true
+directional_shadow_max_distance = 1378.3
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_jdg2m")
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("1_jdg2m")]
+
+[node name="CharacterBody3D2" parent="." instance=ExtResource("1_jdg2m")]
+transform = Transform3D(-0.9923319, 0, -0.12360155, 0, 1, 0, 0.12360155, 0, -0.9923319, 0, 0, -49.75569)
+inputs_active = false
+padding_left_canva_estado = 400
+printConsole = false

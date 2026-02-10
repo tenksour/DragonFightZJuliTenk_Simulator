@@ -1,0 +1,3 @@
+0.3	activar_right_leg_colision	true	null
+0.35	invocar_lineas_golpe		true	arm_right
+0.7	activar_right_leg_colision	false	null
