@@ -1,0 +1,3 @@
+0.92	invocar_lineas_hueso	true	arm_left
+0.96	invocar_hit_combo	true	null
+0.96	invocar_golpe_fuerte	true	arm_left

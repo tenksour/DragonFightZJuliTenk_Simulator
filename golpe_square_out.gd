@@ -20,12 +20,12 @@ func _physics_process(delta: float) -> void:
 			#iniciar()
 		#pass
 	#else:
-	if character.is_action_pressed("circle") and !activo :
-		#time_preload+=1
-		#if time_preload>30:
-		iniciar()
-	else:
-		time_preload=0	
+	#if character.is_action_pressed("circle") and !activo :
+		##time_preload+=1
+		##if time_preload>30:
+		#iniciar()
+	#else:
+		#time_preload=0	
 	pass
 	#if character.is_action_just_released("cross") and activo:
 		#detener()

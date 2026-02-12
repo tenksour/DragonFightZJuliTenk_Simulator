@@ -1,0 +1,4 @@
+0.33	activar_right_leg_colision	true	null
+0.50	activar_bones_colision	false	null
+1.00	activar_left_leg_colision	true	null
+1.21	activar_bones_colision	false	null

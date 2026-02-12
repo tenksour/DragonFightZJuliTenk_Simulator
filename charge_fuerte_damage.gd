@@ -8,6 +8,7 @@ var is_front=true
 var originDamage:Node3D
 var timeLife=120
 @export var aceleration=125
+var direction=Vector3.ZERO
 func _ready() -> void:
 	super._ready()
 
@@ -18,8 +19,8 @@ func _physics_process(delta: float) -> void:
 		if timeCount>timeLife:
 			detener()
 			return
-		var direction=character.global_position-originDamage.global_position
-		direction.y=0
+		#var direction=character.global_position-originDamage.global_position
+		#direction.y=0
 		direction=direction.normalized()*aceleration
 		character.velocity=direction
 		character.move_and_slide()
@@ -35,6 +36,8 @@ func onAnimationFinished(animName):
 func iniciar_damage(damage_rest_multiply:float,_originDamage:Node3D,_is_front=true):
 	is_front=_is_front
 	originDamage=_originDamage
+	direction=character.global_position-originDamage.global_position
+	direction.y=0
 	damage_vida_final=damage_vida_origin*damage_rest_multiply
 	print("iniciado1: "+str(iniciado))
 	iniciar()

@@ -1,0 +1,3 @@
+0.25	activar_left_arm_colision	true	null
+0.38	invocar_lineas_hueso	true	arm_left
+0.50	activar_bones_colision	false	null

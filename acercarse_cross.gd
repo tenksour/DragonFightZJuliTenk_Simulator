@@ -24,6 +24,10 @@ func _physics_process(delta: float) -> void:
 	#if character.is_action_just_released("cross") and activo:
 		#detener()
 	if activo:
+		if character.is_action_just_pressed("cross") and timeCount>15:
+			onlyDetener()
+			$"../throw_in".iniciar()
+			return
 		pass
 		#var skeleton=character.characterImportedSkeleton
 		#var root_bone_idx=skeleton.find_bone("000_NULL")

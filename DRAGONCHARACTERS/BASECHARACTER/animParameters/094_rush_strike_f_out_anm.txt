@@ -1,0 +1,2 @@
+0.21	activar_head_colision	true	null
+0.50	activar_bones_colision	false	null

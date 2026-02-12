@@ -1,0 +1,4 @@
+0.54	activar_bones_colision	false	null
+0.96	activar_bones_colision	false	null
+1.29	activar_bones_colision	false	null
+1.71	activar_bones_colision	false	null

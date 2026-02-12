@@ -10,8 +10,8 @@ class_name CharacterPrin
 @onready var camera:Camera3D=$CameraPivot/SpringArm3D/Node3D/CameraSubPivot/Camera3D
 @onready var cameraPivotSpringArm:SpringArm3D=$CameraPivot/SpringArm3D
 @onready var characterPivot:Node3D=$Pivot
-@onready var characterImportedSkeleton:Node3D=$Pivot/Node3D/personaje_glb/Armature/Skeleton3D
-@onready var animationPlayer:AnimationPlayer=$Pivot/Node3D/personaje_glb/AnimationPlayer
+@onready var characterImportedSkeleton:Node3D
+@onready var animationPlayer:AnimationPlayer
 #@onready var animationTree:AnimationTree=$AnimationTree
 #@onready var animationTree2:AnimationTree=$AnimationTree2
 @onready var areaArmRight:Area3D=$areas/area_arm_right
@@ -40,24 +40,96 @@ var characterTarget:Node3D
 var targering_character=false
 
 var mode_camera=1
+@export_enum( "res://DRAGONCHARACTERS/VEGETA7", "res://DRAGONCHARACTERS/TEMPCHAR") var charPersonajePathFolder=""
+@export var isCharGLB=true
+##Para agarre del pie tipo goku 015_HEEL_L
+@export_enum( "003_WAIST", "015_HEEL_L") var boneThrow="003_WAIST"#
+@export var aciveColisionEnemyThrow=true
+@export_enum( "toon","toon2", "diffuse1","diffuse2","metalic") var styleShadder="toon"#
+##Para agarre del pie tipo goku poner true
+#@export var boneThrowCurrent=false#para agarre del pie se debe poner true
+#@export var boneThrow="015_HEEL_L"
+func prepareFromGLB():
+	characterImportedSkeleton=$Pivot/Node3D/personaje_glb/Armature/Skeleton3D
+	animationPlayer=$Pivot/Node3D/personaje_glb/AnimationPlayer
 func _ready() -> void:
-	prepararAnimData()
+
+	
+	prepareFromGLB()
+	if charPersonajePathFolder!="":
+		
+		if $Pivot/Node3D.has_node("personaje_glb"):
+			#debo renombrar el viejo para que no me permita colocar el nuevo con el nobmre indentico
+			#ya que el queefree no se ejecuta al instante y si existe aun el mismo nombre, me lo renombrara
+			$Pivot/Node3D.get_node("personaje_glb").name="test"
+			$Pivot/Node3D.get_node("test").queue_free()
+		var prefijo="glb"
+		if !isCharGLB:
+			prefijo="tscn"
+		var escena = load(charPersonajePathFolder+"/"+"char."+prefijo)
+		var glb_instance: Node3D = escena.instantiate()
+		#var GLB_MODEL: PackedScene = load(charPersonajePathFolder+"/"+"char.tscn")
+		#var glb_instance: Node3D = GLB_MODEL.instantiate()
+
+		$Pivot/Node3D.add_child(glb_instance)
+		glb_instance.name="personaje_glb"
+		#characterPivot.get_node("Node3D").add_child(glb_instance)
+		#characterPivot.get_node("Node3D").add_child(glb_instance)
+		animationPlayer=glb_instance.get_node("AnimationPlayer")
+		characterImportedSkeleton=glb_instance.get_node("Armature/Skeleton3D")
+	animationPlayer.speed_scale=2.5
+	if charPersonajePathFolder!="":
+		prepararAnimData(charPersonajePathFolder+"/animParameters")		
+	else:
+		prepararAnimData()
 	var meshes=characterImportedSkeleton.get_children()
+	var i=1
 	for m:MeshInstance3D in meshes:
 		var mat:StandardMaterial3D=m.get_active_material(0)
 		mat=mat.duplicate()
 
-		mat.diffuse_mode=BaseMaterial3D.DIFFUSE_TOON
-		mat.disable_receive_shadows=true
-		mat.metallic = 0.1
-		mat.roughness = 0.0   # bordes definidos estilo cartoon
-		mat.stencil_mode=BaseMaterial3D.STENCIL_MODE_OUTLINE
-		mat.stencil_outline_thickness=0.1
+		if styleShadder=="toon":
+			mat.diffuse_mode=BaseMaterial3D.DIFFUSE_TOON
+			mat.disable_receive_shadows=true
+			mat.metallic = 0.0
+			mat.specular_mode=BaseMaterial3D.SPECULAR_DISABLED
+			mat.roughness = 0.01   # bordes definidos estilo cartoon
+			mat.stencil_mode=BaseMaterial3D.STENCIL_MODE_OUTLINE
+			mat.stencil_reference=i
+		if styleShadder=="toon2":
+			mat.diffuse_mode=BaseMaterial3D.DIFFUSE_TOON
+			mat.disable_receive_shadows=true
+			mat.metallic = 0
+			mat.specular_mode=BaseMaterial3D.SPECULAR_TOON
+			mat.roughness =0.16 # bordes definidos estilo cartoon
+			mat.stencil_mode=BaseMaterial3D.STENCIL_MODE_OUTLINE
+			mat.stencil_reference=i
+		if styleShadder=="diffuse2":
+			mat.diffuse_mode=BaseMaterial3D.DIFFUSE_BURLEY
+			mat.disable_receive_shadows=true
+			mat.metallic = 0
+			mat.specular_mode=BaseMaterial3D.SPECULAR_TOON
+			mat.roughness =0   # bordes definidos estilo cartoon
+			mat.stencil_mode=BaseMaterial3D.STENCIL_MODE_OUTLINE
+			mat.stencil_reference=i
+		if styleShadder=="diffuse1":
+			mat.diffuse_mode=BaseMaterial3D.DIFFUSE_BURLEY
+			mat.disable_receive_shadows=true
+			mat.metallic = 0
+			mat.specular_mode=BaseMaterial3D.SPECULAR_DISABLED
+			mat.roughness =0.4  # bordes definidos estilo cartoon
+			mat.stencil_mode=BaseMaterial3D.STENCIL_MODE_OUTLINE
+			mat.stencil_reference=i
+		
 # Aplicar al MeshInstance
 		m.set_surface_override_material(0,mat)
+		mat.stencil_outline_thickness=0.05
+		i+=1
 	pass
 func switchTargeringChar():
 	targering_character=!targering_character
+	$AnimationPlayer3.play("new_animation")
+	#$eventos_auxiliares.invocarGolpeSimpleArmLeft=true
 func switchModeCamera():
 	if mode_camera==1:
 		mode_camera=2
@@ -81,10 +153,11 @@ func _physics_process(delta: float) -> void:
 	$CanvasLayer/Label.text+="\n"+" arm_right: "+str($areas/area_arm_right.monitoring)
 	$CanvasLayer/Label.text+="\n"+" leg_left: "+str($areas/area_leg_left.monitoring)
 	$CanvasLayer/Label.text+="\n"+" leg_right: "+str($areas/area_leg_right.monitoring)
+	$CanvasLayer/Label.text+="\n"+" head: "+str($areas/area_head.monitoring)
 	if animationPlayer.is_playing():
-		$CanvasLayer/Label.text+="\n"+" current_time_anim_player_original: "+str(animationPlayer.current_animation_position)
+		$CanvasLayer/Label.text+="\n"+" current_time_anim_player_original: "+str("%.2f"%animationPlayer.current_animation_position)
 	if $AnimationPlayer.is_playing():
-		$CanvasLayer/Label.text+="\n"+" current_time_anim_player_aux: "+str($AnimationPlayer.current_animation_position)
+		$CanvasLayer/Label.text+="\n"+" current_time_anim_player_aux: "+str("%.2f"%$AnimationPlayer.current_animation_position)
 	#$CanvasLayer/ProgressBar.value=vida
 	#if mostrarLabelDebug:
 		#$CanvasLayer.visible=true
@@ -97,8 +170,8 @@ func _physics_process(delta: float) -> void:
 	if estado=="normal" and direction == Vector3.ZERO:
 		var anim=animationPlayer.get_animation("000_ground_anm")
 		anim.loop_mode=Animation.LOOP_LINEAR
-		var anim2=animationPlayer.get_animation("001_ground_tired_anm")
-		anim2.loop_mode=Animation.LOOP_LINEAR
+		#var anim2=animationPlayer.get_animation("001_ground_tired_anm")
+		#anim2.loop_mode=Animation.LOOP_LINEAR
 		#animationTree.active=false
 		#animationPlayer.play("000_ground_anm",0.2)
 		#var dir2=Vector3.ZERO
@@ -133,11 +206,14 @@ func _physics_process(delta: float) -> void:
 		var animRight="007_move_far_r_loop_anm"
 		#var anim=animationPlayer.get_animation("003_move_far_loop_anm")
 		#anim.loop_mode=Animation.LOOP_LINEAR
-		
-		animationPlayer.get_animation(animFront).loop_mode=Animation.LOOP_LINEAR
-		animationPlayer.get_animation(animBack).loop_mode=Animation.LOOP_LINEAR
-		animationPlayer.get_animation(animLeft).loop_mode=Animation.LOOP_LINEAR
-		animationPlayer.get_animation(animRight).loop_mode=Animation.LOOP_LINEAR
+		if animationPlayer.has_animation(animFront):
+			animationPlayer.get_animation(animFront).loop_mode=Animation.LOOP_LINEAR
+		if animationPlayer.has_animation(animBack):
+			animationPlayer.get_animation(animBack).loop_mode=Animation.LOOP_LINEAR
+		if animationPlayer.has_animation(animLeft):
+			animationPlayer.get_animation(animLeft).loop_mode=Animation.LOOP_LINEAR
+		if animationPlayer.has_animation(animRight):
+			animationPlayer.get_animation(animRight).loop_mode=Animation.LOOP_LINEAR
 		var dir2=calcSimpleMoveTeclas(delta)
 		if dir2.x==1:
 			animationPlayer.play(animRight,1)
@@ -489,20 +565,32 @@ func getLines(file):
 	pass
 func isCharacterTargetInAreaAndTargering():
 	return $area_targering.isTargetisInArea()
-func prepararAnimData():
+func remove_empty_tracks(anim: Animation) -> void:
+	if anim == null:
+		return
+	for i in range(anim.get_track_count() - 1, -1, -1):
+		if anim.track_get_key_count(i) == 0:
+			anim.remove_track(i)
+func prepararAnimData(pathFolderAnimParameters="res://DRAGONCHARACTERS/BASECHARACTER/animParameters"):
 	var library_original=animationPlayer.get_animation_library("")
 	var library_code: AnimationLibrary
 	library_code = $AnimationPlayer.get_animation_library("")
+	
+	library_code=library_code.duplicate()
+	$AnimationPlayer.remove_animation_library("")
+	$AnimationPlayer.add_animation_library("",library_code)
+
 	$AnimationPlayer.speed_scale=animationPlayer.speed_scale
 	var anims=[]
 	for anim_name in library_original.get_animation_list():
-		var concat="res://DRAGONCHARACTERS/GOKUFINBASE/glb/animaciones/"
-		var filea= FileAccess.open(concat+anim_name+".txt", FileAccess.READ)
+		var concat=pathFolderAnimParameters
+		#print("leyendo animparameters: "+concat+"/"+anim_name+".txt")
+		var filea= FileAccess.open(concat+"/"+anim_name+".txt", FileAccess.READ)
 		if filea:
 			var anim = Animation.new()
 			anim.length = animationPlayer.get_animation(anim_name).length
 			anim.loop_mode = Animation.LOOP_NONE
-			print("animacion aux duration: "+str(anim.length))
+			#print("animacion aux duration: "+str(anim.length))
 			var lineas=getLines(filea)
 			var key_frames=0
 			var track_left_index := anim.add_track(Animation.TYPE_VALUE)
@@ -525,9 +613,67 @@ func prepararAnimData():
 			anim.track_set_interpolation_type(track_leg_left_index, Animation.INTERPOLATION_NEAREST)
 			anim.track_set_path(track_leg_left_index, "areas/area_leg_left:monitoring")
 			anim.value_track_set_update_mode(track_leg_left_index,Animation.UPDATE_DISCRETE)
+			
+			var track_left_arm_golpe_simple_index := anim.add_track(Animation.TYPE_VALUE)
+			anim.track_set_interpolation_type(track_left_arm_golpe_simple_index, Animation.INTERPOLATION_NEAREST)
+			anim.track_set_path(track_left_arm_golpe_simple_index, "eventos_auxiliares:invocarGolpeSimpleArmLeft")
+			anim.value_track_set_update_mode(track_left_arm_golpe_simple_index,Animation.UPDATE_DISCRETE)
+			
+			var track_right_arm_golpe_simple_index := anim.add_track(Animation.TYPE_VALUE)
+			anim.track_set_interpolation_type(track_right_arm_golpe_simple_index, Animation.INTERPOLATION_NEAREST)
+			anim.track_set_path(track_right_arm_golpe_simple_index, "eventos_auxiliares:invocarGolpeSimpleArmRight")
+			anim.value_track_set_update_mode(track_right_arm_golpe_simple_index,Animation.UPDATE_DISCRETE)
+			
+			var track_left_arm_golpe_fuerte_index := anim.add_track(Animation.TYPE_VALUE)
+			anim.track_set_interpolation_type(track_left_arm_golpe_fuerte_index, Animation.INTERPOLATION_NEAREST)
+			anim.track_set_path(track_left_arm_golpe_fuerte_index, "eventos_auxiliares:invocarGolpeFuerteArmLeft")
+			anim.value_track_set_update_mode(track_left_arm_golpe_fuerte_index,Animation.UPDATE_DISCRETE)
+			
+			var track_right_arm_golpe_fuerte_index := anim.add_track(Animation.TYPE_VALUE)
+			anim.track_set_interpolation_type(track_right_arm_golpe_fuerte_index, Animation.INTERPOLATION_NEAREST)
+			anim.track_set_path(track_right_arm_golpe_fuerte_index, "eventos_auxiliares:invocarGolpeFuerteArmRight")
+			anim.value_track_set_update_mode(track_right_arm_golpe_fuerte_index,Animation.UPDATE_DISCRETE)
+			
+			var track_root_golpe_fuerte_index := anim.add_track(Animation.TYPE_VALUE)
+			anim.track_set_interpolation_type(track_root_golpe_fuerte_index, Animation.INTERPOLATION_NEAREST)
+			anim.track_set_path(track_root_golpe_fuerte_index, "eventos_auxiliares:invocarGolpeFuerteRoot")
+			anim.value_track_set_update_mode(track_root_golpe_fuerte_index,Animation.UPDATE_DISCRETE)
+			
+			var track_activar_bones_colision := anim.add_track(Animation.TYPE_VALUE)
+			anim.track_set_interpolation_type(track_activar_bones_colision, Animation.INTERPOLATION_NEAREST)
+			anim.track_set_path(track_activar_bones_colision, "eventos_auxiliares:activarColisionGolpes")
+			anim.value_track_set_update_mode(track_activar_bones_colision,Animation.UPDATE_DISCRETE)
+			
+			var track_head_colisio_index := anim.add_track(Animation.TYPE_VALUE)
+			anim.track_set_interpolation_type(track_head_colisio_index, Animation.INTERPOLATION_NEAREST)
+			anim.track_set_path(track_head_colisio_index, "areas/area_head:monitoring")
+			anim.value_track_set_update_mode(track_head_colisio_index,Animation.UPDATE_DISCRETE)
+			
+			var track_activarSonidoViento_index := anim.add_track(Animation.TYPE_VALUE)
+			anim.track_set_interpolation_type(track_activarSonidoViento_index, Animation.INTERPOLATION_NEAREST)
+			anim.track_set_path(track_activarSonidoViento_index, "eventos_auxiliares:activarSonidoViento")
+			anim.value_track_set_update_mode(track_activarSonidoViento_index,Animation.UPDATE_DISCRETE)
 			#anim.track_set_interpolation_type(track_left_index, Animation.UPDATE_DISCRETE)
 			#anim.track_set_update_mode(track_left_index, Animation.UPDATE_DISCRETE)
 			for lin in lineas:
+				if lin.split("\t")[1]=="invocar_sonido_viento":
+					var time=float(lin.split("\t")[0])
+					var value=lin.split("\t")[2]
+					if value=="true":
+						anim.track_insert_key(track_activarSonidoViento_index, time, true)
+					else:
+						anim.track_insert_key(track_activarSonidoViento_index, time, true)
+					key_frames+=1
+				if lin.split("\t")[1]=="activar_head_colision":
+					var time=float(lin.split("\t")[0])
+					var value=lin.split("\t")[2]
+					if value=="true":
+						anim.track_set_interpolation_type(track_head_colisio_index, Animation.INTERPOLATION_NEAREST)
+						anim.track_insert_key(track_head_colisio_index, time, true)
+					else:
+						anim.track_set_interpolation_type(track_head_colisio_index, Animation.INTERPOLATION_NEAREST)
+						anim.track_insert_key(track_head_colisio_index, time, false)
+					key_frames+=1
 				if lin.split("\t")[1]=="activar_left_arm_colision":
 					var time=float(lin.split("\t")[0])
 					var value=lin.split("\t")[2]
@@ -570,63 +716,60 @@ func prepararAnimData():
 					else:
 						anim.track_insert_key(track_leg_left_index, time, false)
 					key_frames+=1
-			print("animacion agregada"+anim_name+"frames agregados: "+str(key_frames))
-			print(anim.length)
+				if lin.split("\t")[1]=="invocar_golpe_simple":
+					var time=float(lin.split("\t")[0])
+					var value_tipo=lin.split("\t")[3]
+					#var track := anim.add_track(Animation.TYPE_VALUE)
+					#anim.track_set_path(track, "areas/area_arm_right:monitoring")
+					if value_tipo=="arm_right":
+						anim.track_insert_key(track_right_arm_golpe_simple_index, time, true)
+					else:if value_tipo=="arm_left":
+						anim.track_insert_key(track_left_arm_golpe_simple_index, time, true)
+				if lin.split("\t")[1]=="invocar_golpe_fuerte":
+					var time=float(lin.split("\t")[0])
+					var value_tipo=lin.split("\t")[3]
+					if value_tipo=="arm_right":
+						anim.track_insert_key(track_right_arm_golpe_fuerte_index, time, true)
+					else:if value_tipo=="arm_left":
+						anim.track_insert_key(track_left_arm_golpe_fuerte_index, time, true)
+					else:if value_tipo=="root":
+						anim.track_insert_key(track_root_golpe_fuerte_index, time, true)
+					key_frames+=1
+				if lin.split("\t")[1]=="activar_bones_colision":
+					var time=float(lin.split("\t")[0])
+					var boolean=lin.split("\t")[2]
+					if boolean=="true":
+						boolean=true
+					else:
+						boolean=false
+					anim.track_insert_key(track_activar_bones_colision, time, boolean)
+					key_frames+=1
+			#print("animacion agregada"+anim_name+"frames agregados: "+str(key_frames))
+			#print(anim.length)
 			#limpio los tracks sin keys
-			if anim.track_get_key_count(track_left_index)==0:
-				anim.remove_track(track_left_index)
-			if anim.track_get_key_count(track_right_index)==0:
-				anim.remove_track(track_right_index)
-				pass
-			if anim.track_get_key_count(track_leg_left_index)==0:
-				anim.remove_track(track_leg_left_index)
-				pass
-			if anim.track_get_key_count(track_leg_right_index)==0:
-				anim.remove_track(track_leg_right_index)
-				pass
-			library_code.add_animation(anim_name,anim)		
-			#var a=$AnimationPlayer.get_animation(anim_name)	
-			#a.track_set_update_mode(track_left_index, Animation.UPDATE_DISCRETE)
-			pass
+			library_code.add_animation(anim_name,anim)
+			#print("track_leg_leg_count: "+str(anim.track_get_key_count(track_leg_left_index)))
+			remove_empty_tracks(anim)
 		ResourceSaver.save(library_code, "res://librarytest.tres")
-		#print(anim_name)
-	#var path = "res://DRAGONCHARACTERS/GOKUFINBASE/glb/animaciones/055_strike_01_anm.txt"
-	#var path2 = "res://DRAGONCHARACTERS/GOKUFINBASE/glb/animaciones/056_strike_02_anm.txt"
-	#var file := FileAccess.open(path, FileAccess.READ)
-	#var lineas:PackedStringArray
-	#if file:
-		#var text := file.get_as_text()
-		#lineas = text.split("\n", false)
-#
-	## Limpia posibles '\r' (Windows)
-		#for i in range(lineas.size()):
-			#lineas[i] = lineas[i].strip_edges()
-		#file.close()
-	#var anim = Animation.new()
-	#anim.length = 1.0
-	#anim.loop_mode = Animation.LOOP_NONE
-	#var track := anim.add_track(Animation.TYPE_VALUE)
-	#anim.track_set_path(track, "areas/area_arm_right:monitoring")
-	#anim.track_insert_key(track, 0.2, true)	
-	#var library: AnimationLibrary
-	#library = $AnimationPlayer.get_animation_library("")
-#
-	## Añadir animación a la librería
-	#library.add_animation("055_strike_01_anm", anim)
-	##animationPlayer.add_animation("activar_area", anim)
-	##animationPlayer.play("activar_area")
-	#print(lineas)
 	pass
+func activarAreasColisionGolpe():
+	$areas/area_arm_left.monitoring=true
+	$areas/area_arm_right.monitoring=true
+	$areas/area_leg_left.monitoring=true
+	$areas/area_leg_right.monitoring=true
+	$areas/area_head.monitoring=true
 func desactivarAreasColisionGolpe():
 	$areas/area_arm_left.monitoring=false
 	$areas/area_arm_right.monitoring=false
 	$areas/area_leg_left.monitoring=false
 	$areas/area_leg_right.monitoring=false
+	$areas/area_head.monitoring=false
 func conectarSeñalesAreas(callback: Callable):
 	$areas/area_arm_left.body_entered.connect(callback)
 	$areas/area_arm_right.body_entered.connect(callback)
 	$areas/area_leg_left.body_entered.connect(callback)
 	$areas/area_leg_right.body_entered.connect(callback)
+	$areas/area_head.body_entered.connect(callback)
 	pass
 func desconectarSeñalesAreas(callback: Callable):
 	if $areas/area_arm_left.body_entered.is_connected(callback):
@@ -638,3 +781,33 @@ func desconectarSeñalesAreas(callback: Callable):
 		$areas/area_leg_left.body_entered.disconnect(callback)
 	if $areas/area_leg_right.body_entered.is_connected(callback):
 		$areas/area_leg_right.body_entered.disconnect(callback)
+	if $areas/area_head.body_entered.is_connected(callback):
+		$areas/area_head.body_entered.disconnect(callback)
+func get_bone_global_rest_position(skeleton: Skeleton3D, bone_name: String) -> Vector3:
+	var idx = skeleton.find_bone(bone_name)
+	var t := Transform3D.IDENTITY
+
+	while idx != -1:
+		t = skeleton.get_bone_rest(idx) *t
+		idx=skeleton.get_bone_parent(idx)
+	return (skeleton.global_transform * t).origin
+func enableColision(enable):
+	$CollisionShape3D.disabled=!enable
+func getAnimationPlayerAux()->AnimationPlayer:
+	return $AnimationPlayer
+# Función recursiva para imprimir un nodo y todos sus hijos
+func imprimir_nodos(nodo: Node, nivel: int = 0) -> void:
+	# Generar la indentación
+	var indent = ""
+	for i in range(nivel):
+		indent += "\t"
+
+	print(indent + nodo.name)
+	
+	for hijo in nodo.get_children():
+		imprimir_nodos(hijo, nivel + 1)
+func activarCamaraOriginal():
+	camera.make_current()
+func activarCamaraThrow():
+	$Camera3DThrow.make_current()
+	pass
