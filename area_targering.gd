@@ -3,7 +3,9 @@ extends Area3D
 
 @onready var character:CharacterPrin=self.get_parent()
 @export var velocity_rotation_target=5
+var moverInstantaneo=false
 var list_objects=[]
+var time=0
 # Called when the node enters the scene tree for the first time.
 func isTargetisInArea():
 	for node:Node3D in list_objects:
@@ -69,8 +71,13 @@ func _physics_process(delta: float) -> void:
 		character.cameraPivot.look_at(vector_direction,Vector3.UP)
 		var rotation_end=Vector3(character.cameraPivot.rotation)
 		#print("rotation 2 end: "+str(rotation_end))
-		character.cameraPivot.rotation=rotation_aux
-		moveAngleTransition(character.cameraPivot,rotation_end,velocity_rotation_target)
+		if moverInstantaneo:
+			time+=delta
+		if !moverInstantaneo:
+			character.cameraPivot.rotation=rotation_aux
+			moveAngleTransition(character.cameraPivot,rotation_end,velocity_rotation_target)
+		if moverInstantaneo and time>3:
+			moverInstantaneo=false
 		#print("rotation 3 pos_end: "+str(character.cameraPivot.rotation))
 		#character.cameraPivot.rotation=rotation_aux
 		if character.cameraPivot.global_rotation.x<deg_to_rad(-38):

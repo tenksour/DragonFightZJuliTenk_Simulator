@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://b4mdqdxt7f6y2"]
+[gd_scene load_steps=64 format=3 uid="uid://b4mdqdxt7f6y2"]
 
 [ext_resource type="Script" uid="uid://b556as2kvv6ta" path="res://character_body_3d.gd" id="1_o200l"]
 [ext_resource type="PackedScene" uid="uid://cf0bmo50tom0k" path="res://DRAGONCHARACTERS/BASECHARACTER/char.glb" id="2_mh65e"]
@@ -21,12 +21,14 @@
 [ext_resource type="Script" uid="uid://butxax06van81" path="res://area_targering.gd" id="11_yrv5c"]
 [ext_resource type="Script" uid="uid://dbxdruoh4jtku" path="res://retroceder_cross.gd" id="12_g2aya"]
 [ext_resource type="Script" uid="uid://s1w2ysboggdx" path="res://left_cross.gd" id="13_qhwu2"]
-[ext_resource type="AnimationLibrary" path="res://librarytest.tres" id="15_j72q8"]
+[ext_resource type="AnimationLibrary" uid="uid://b6c8lsvg52fn4" path="res://librarytest.tres" id="15_j72q8"]
 [ext_resource type="Script" uid="uid://di3eoux814sl8" path="res://golpe_square_cargado.gd" id="16_il1b6"]
 [ext_resource type="Script" uid="uid://28opgr4347qu" path="res://golpe_square_out.gd" id="17_ilhej"]
 [ext_resource type="Script" uid="uid://cytgdl3dbvlbb" path="res://dash_square_fuerte_out.gd" id="20_5rom6"]
+[ext_resource type="Script" uid="uid://d3e6h2h3dmx8n" path="res://ki_blast_simple.gd" id="23_8gtpg"]
 [ext_resource type="Script" uid="uid://fso8vm4dayer" path="res://throw_in.gd" id="23_mh65e"]
 [ext_resource type="AudioStream" uid="uid://c7uslma5bqxci" path="res://audios/golpe_simple.mp3" id="25_b1d8a"]
+[ext_resource type="Script" uid="uid://bgbs7yinsxuyo" path="res://combo_teleport.gd" id="25_lrstk"]
 [ext_resource type="AudioStream" uid="uid://bl27nqk8d56g4" path="res://audios/golpe_medio.mp3" id="26_eq87j"]
 [ext_resource type="AudioStream" uid="uid://hqaraop2re1j" path="res://audios/golpe_fuerte.mp3" id="27_srw6o"]
 [ext_resource type="AudioStream" uid="uid://copds4lepf1oo" path="res://audios/golpe.mp3" id="28_tp56f"]
@@ -39,6 +41,7 @@
 [ext_resource type="AudioStream" uid="uid://b6cr4yd60w22c" path="res://audios/viento.mp3" id="35_pqvm3"]
 [ext_resource type="AudioStream" uid="uid://dwkd8yudawmtp" path="res://audios/viento2.mp3" id="36_rj7o4"]
 [ext_resource type="AudioStream" uid="uid://0d5xchfroev" path="res://audios/viento3.mp3" id="37_wews7"]
+[ext_resource type="AudioStream" uid="uid://byxu1psgpv2ur" path="res://audios/teleport.mp3" id="41_g36s2"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gs8qk"]
 radius = 5.0
@@ -192,6 +195,30 @@ tracks/1/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Camera3DThrow:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Pivot/Node3D2/Camera3D:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_pqvm3"]
 resource_name = "new_animation"
@@ -223,10 +250,34 @@ tracks/0/keys = {
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(0.034906585, 0, 0), Vector3(-0.034906585, 0, 0), Vector3(0.034906585, 0, 0), Vector3(-0.034906585, 0, 0), Vector3(0, 0, 0)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Camera3DThrow:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0073553706, 0.033333335, 0.06666667, 0.08323276, 0.09417313),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.034906585, 0, 0), Vector3(-0.034906585, 0, 0), Vector3(0.034906585, 0, 0), Vector3(-0.034906585, 0, 0), Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Pivot/Node3D2/Camera3D:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.0073553706, 0.033333335, 0.06666667, 0.08323276, 0.09417313),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.034906585, 0, 0), Vector3(-0.034906585, 0, 0), Vector3(0.034906585, 0, 0), Vector3(-0.034906585, 0, 0), Vector3(0, 0, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_omxtp"]
 resource_name = "temblor1"
-length = 0.23
+length = 0.11
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -234,10 +285,34 @@ tracks/0/path = NodePath("CameraPivot/SpringArm3D/Node3D/CameraSubPivot/Camera3D
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.06666667, 0.13333334, 0.16666667, 0.23333333),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.033333335, 0.06666667, 0.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0.006981317, 0, 0), Vector3(-0.013962634, 0, 0), Vector3(0.006981317, 0, 0), Vector3(0, 0, 0)]
+"values": [Vector3(0, 0, 0), Vector3(0.006981317, 0, 0), Vector3(-0.013962634, 0, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Camera3DThrow:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0073553706, 0.033333335, 0.06666667, 0.08323276, 0.09417313),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.034906585, 0, 0), Vector3(-0.034906585, 0, 0), Vector3(0.034906585, 0, 0), Vector3(-0.034906585, 0, 0), Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Pivot/Node3D2/Camera3D:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.0073553706, 0.033333335, 0.06666667, 0.08323276, 0.09417313),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.034906585, 0, 0), Vector3(-0.034906585, 0, 0), Vector3(0.034906585, 0, 0), Vector3(-0.034906585, 0, 0), Vector3(0, 0, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_omxtp"]
@@ -255,13 +330,7 @@ velocidad_gravity_inicial = 8
 velocidad_max_gravity = 130
 aceleration_gravity = 1.5
 velocidad_giro_walking = 7
-
-[node name="Pivot" type="Node3D" parent="."]
-
-[node name="Node3D" type="Node3D" parent="Pivot"]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
-
-[node name="personaje_glb" parent="Pivot/Node3D" instance=ExtResource("2_mh65e")]
+speed_scale_animation = 2.6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.018044, 0)
@@ -279,6 +348,18 @@ spring_length = 20.0
 [node name="CameraSubPivot" type="Node3D" parent="CameraPivot/SpringArm3D/Node3D"]
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D/Node3D/CameraSubPivot"]
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="Node3D" type="Node3D" parent="Pivot"]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="personaje_glb" parent="Pivot/Node3D" instance=ExtResource("2_mh65e")]
+
+[node name="Node3D2" type="Node3D" parent="Pivot"]
+transform = Transform3D(0.75682396, 0, 0.65361875, 0, 1, 0, -0.65361875, 0, 0.75682396, 16.017494, 10.755312, 9.59417)
+
+[node name="Camera3D" type="Camera3D" parent="Pivot/Node3D2"]
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 active = false
@@ -361,8 +442,10 @@ reiniciable = true
 
 [node name="charge_fuerte_damage" type="Node3D" parent="estados"]
 script = ExtResource("8_wd0i8")
+aceleration = 140
 estadoName = "charge_fuerte_damage"
 estadosIn = ["normal", "idle_vuelo", "charge_fuerte_damage"]
+reiniciable = true
 
 [node name="aturdir_damage" type="Node3D" parent="estados"]
 script = ExtResource("9_sm2cx")
@@ -427,17 +510,28 @@ estadosIn = ["normal", "idle_vuelo", "skill_simple_1", "skill_simple_2", "skill_
 [node name="golpe_square_fuerte_out" type="Node3D" parent="estados"]
 script = ExtResource("17_ilhej")
 estadoName = "golpe_square_fuerte_out"
-estadosIn = ["normal", "idle_vuelo", "golpe_square_fuerte_cargado", "volar_rapido"]
+estadosIn = ["normal", "idle_vuelo", "golpe_square_fuerte_cargado", "volar_rapido", "combo_teleport"]
 
 [node name="dash_square_fuerte_out" type="Node3D" parent="estados"]
 script = ExtResource("20_5rom6")
 estadoName = "dash_square_fuerte_out"
 estadosIn = ["normal", "idle_vuelo", "volar_rapido"]
 
+[node name="ki_blast_simple" type="Node3D" parent="estados"]
+script = ExtResource("23_8gtpg")
+estadoName = "ki_blast_simple"
+estadosIn = ["normal", "idle_vuelo", "ki_blast_simple"]
+reiniciable = true
+
 [node name="throw_in" type="Node3D" parent="estados"]
 script = ExtResource("23_mh65e")
 estadoName = "throw_in"
 estadosIn = ["normal", "idle_vuelo", "acercarse_cross"]
+
+[node name="combo_teleport" type="Node3D" parent="estados"]
+script = ExtResource("25_lrstk")
+estadoName = "combo_teleport"
+estadosIn = ["normal", "idle_vuelo", "golpe_square_fuerte_out"]
 
 [node name="areas" type="Node3D" parent="."]
 
@@ -555,6 +649,9 @@ stream = ExtResource("36_rj7o4")
 [node name="viento3" type="AudioStreamPlayer3D" parent="temp_audios"]
 stream = ExtResource("37_wews7")
 
+[node name="teleport" type="AudioStreamPlayer3D" parent="temp_audios"]
+stream = ExtResource("41_g36s2")
+
 [node name="eventos_auxiliares" type="Node3D" parent="."]
 script = ExtResource("35_omxtp")
 invocarGolpeSimpleArmLeft = true
@@ -562,6 +659,8 @@ invocarGolpeSimpleArmRight = true
 invocarGolpeFuerteArmRight = true
 invocarGolpeFuerteRoot = true
 activarSonidoViento = true
+activar_disparar_efecto_right_arm = null
+activar_disparar_efecto_left_arm = null
 
 [node name="Camera3DThrow" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.87112814, 0.4910558, 0, -0.4910558, 0.87112814, 0, 25.619371, 22.333717)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.218073, 27.914387)

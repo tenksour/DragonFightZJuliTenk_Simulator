@@ -9,6 +9,8 @@ var skeleton_fake:Skeleton3D
 var pivot_suelto:Node3D
 var time_preload=0
 var tipo_damage=3 #3 mandar a volar, 2 mandar volar aturdir , 1 golpe debil
+var continuar_teleport=false
+var charGolpeado:CharacterPrin
 func _ready() -> void:
 	super._ready()
 
@@ -30,6 +32,8 @@ func _physics_process(delta: float) -> void:
 	#if character.is_action_just_released("cross") and activo:
 		#detener()
 	if activo:
+		if character.is_action_just_released("circle"):
+			continuar_teleport=true
 		pass
 		#var skeleton=character.characterImportedSkeleton
 		#var root_bone_idx=skeleton.find_bone("000_NULL")
@@ -92,12 +96,18 @@ func onAnimationFinished(animName):
 		#character.animationPlayer.play(animationNameChargue,0.1)
 		#pivot_suelto.get_node("Node3D/personaje_glb/AnimationPlayer").play(animationNameChargue,0.1)
 	#if animationNameChargue==animName:
+	if continuar_teleport and charGolpeado!=null:
+		onlyDetener()
+		$"../combo_teleport".iniciar2(charGolpeado,charGolpeado.velocity)
+		return
 	detener()
 	#desconectarSeñalAnimationPlayer(onAnimationFinished)
 	#conectarSeñalAnimationPlayer(onAnimationSecondFinished)
 	#detener()
 	pass
 func postIniciar():
+	charGolpeado=null
+	continuar_teleport=false
 	character.callSoundGolpeViento()
 	print("Post iniciar: "+estadoName)
 	pivot_suelto=character.characterPivot.duplicate()
@@ -147,6 +157,7 @@ func _on_area_arm_attack_body_entered(body: Node3D) -> void:
 	if body==character:
 		return
 	if body is CharacterPrin:
+		charGolpeado=body
 		character.callTemblor2()
 		print("time anim aux: "+str(character.get_node("AnimationPlayer").current_animation_position))
 		print("Llamando daño desde: "+character.name +" a "+ body.name)

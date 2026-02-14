@@ -1,0 +1,4 @@
+0.79	invocar_sonido_viento	true	null
+1.42	invocar_sonido_viento	true	null
+2.25	invocar_sonido_viento	true	null
+3.00	invocar_sonido_viento	true	null

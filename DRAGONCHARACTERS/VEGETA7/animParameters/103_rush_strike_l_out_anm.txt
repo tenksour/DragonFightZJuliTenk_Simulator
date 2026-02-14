@@ -1,0 +1,1 @@
+0.42	activar_bones_colision	false	null

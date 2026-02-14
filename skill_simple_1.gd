@@ -26,7 +26,7 @@ var characterPrinIniciado=false
 var time_reset=0
 var pivot_suelto:Node3D
 var skeleton_fake:Skeleton3D
-var velocidad_root_motion=30
+@export var velocidad_root_motion=10
 ##tipo damage 1=damage_simple 2=aturdir 3-mandar a volar
 @export var tipo_damage=1#
 func getAreaFromColisionTipo()->Area3D:
@@ -115,13 +115,21 @@ func _physics_process(delta: float) -> void:
 		#pivot_suelto.global_rotation.x=0
 		
 		var position_bone=character.getPositionGlobalFromBone2("000_NULL",skeleton_fake)
-		var direction=position_bone-character.global_position
-		##direction.y+=velocidad
+		#var direction=position_bone-character.global_position
+		###direction.y+=velocidad
+		#character.anularPositionAnimationBone("000_NULL")
+		#direction=direction.normalized()*velocidad_root_motion
+		##direction=direction.rotated(character.characterTarget.global_position,)
+		#character.velocity=direction
+		#character.move_and_slide()
+		
+		var direction=character.calcularDirectionAcelerataSinPasarse(position_bone,character.global_position,velocidad_root_motion)
 		character.anularPositionAnimationBone("000_NULL")
-		direction=direction.normalized()*velocidad_root_motion
-		#direction=direction.rotated(character.characterTarget.global_position,)
 		character.velocity=direction
 		character.move_and_slide()
+		
+		
+		
 		#character.velocity=character.calcDirectionGravity(delta)
 		#character.move_and_slide()
 			#pass

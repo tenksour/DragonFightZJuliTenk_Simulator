@@ -1,0 +1,1 @@
+2.96	invocar_golpe_simple	true	arm_right

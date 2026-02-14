@@ -1,0 +1,99 @@
+[gd_scene load_steps=10 format=3 uid="uid://cfcmbm0v2wr0x"]
+
+[ext_resource type="Script" uid="uid://pr5583s5th30" path="res://gole_fuerte_effect.gd" id="1_8rmn0"]
+[ext_resource type="PackedScene" uid="uid://1hkr12yrayng" path="res://Efectos/golpe_parpadeo_particle/particle_golpe_parpadeo.tscn" id="2_yro58"]
+[ext_resource type="PackedScene" uid="uid://cp4lk20u32j3f" path="res://Efectos/particle_golpe_fuerte_aspa/particle_golpe_fuerte_aspa.tscn" id="3_nlsfg"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_4ulmh"]
+load_path = "res://.godot/imported/muzzle_03.png-562c370bdcd5bfc1bffa52977d9e9617.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rsfox"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = SubResource("CompressedTexture2D_4ulmh")
+billboard_keep_scale = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_1jcd6"]
+material = SubResource("StandardMaterial3D_rsfox")
+size = Vector2(15.355, 15.655)
+
+[sub_resource type="Animation" id="Animation_6aj35"]
+resource_name = "lanzamiento"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("particle_golpe_fuerte_aspa:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("particle_golpe_parpadeo:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_a21qo"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("particle_golpe_fuerte_aspa:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("particle_golpe_parpadeo:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_g1sex"]
+_data = {
+&"RESET": SubResource("Animation_a21qo"),
+&"lanzamiento": SubResource("Animation_6aj35")
+}
+
+[node name="golpe_simple_effect" type="Node3D"]
+transform = Transform3D(1.205, 0, 0, 0, 1.205, 0, 0, 0, 1.205, 0, 0, 0)
+script = ExtResource("1_8rmn0")
+
+[node name="particle_golpe_parpadeo" parent="." instance=ExtResource("2_yro58")]
+transform = Transform3D(4.57, 0, 0, 0, 4.57, 0, 0, 0, 4.57, 0, 0, 0)
+
+[node name="particle_golpe_fuerte_aspa" parent="." instance=ExtResource("3_nlsfg")]
+transform = Transform3D(0.725, 0, 0, 0, 0.725, 0, 0, 0, 0.725, 0, 0, 0)
+emitting = false
+one_shot = true
+draw_pass_1 = SubResource("QuadMesh_1jcd6")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_g1sex")
+}

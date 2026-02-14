@@ -1,5 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://kra05e5bj7eu"]
+[gd_scene load_steps=13 format=3 uid="uid://kra05e5bj7eu"]
 
+[ext_resource type="Script" uid="uid://dfriaa4whb7ys" path="res://escena_principal.gd" id="1_hcujj"]
 [ext_resource type="PackedScene" uid="uid://b4mdqdxt7f6y2" path="res://character_body_3d_pj.tscn" id="1_jdg2m"]
 [ext_resource type="Texture2D" uid="uid://dyr3hxj8vyngt" path="res://debugtext.png" id="1_r0811"]
 
@@ -45,6 +46,7 @@ glow_blend_mode = 0
 fog_light_energy = 1.85
 
 [node name="Node3D" type="Node3D"]
+script = ExtResource("1_hcujj")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 transform = Transform3D(6.205, 0, 0, 0, 6.205, 0, 0, 0, 6.205, 0, 0, 0)
@@ -84,11 +86,31 @@ directional_shadow_max_distance = 1378.3
 environment = SubResource("Environment_jdg2m")
 
 [node name="CharacterBody3D" parent="." instance=ExtResource("1_jdg2m")]
-boneThrow = "015_HEEL_L"
-styleShadder = "diffuse2"
+charPersonajePathFolder = "res://DRAGONCHARACTERS/VEGETA7"
+styleShadder = "toon2"
 
 [node name="CharacterBody3D2" parent="." instance=ExtResource("1_jdg2m")]
 transform = Transform3D(-0.9923319, 0, -0.12360155, 0, 1, 0, 0.12360155, 0, -0.9923319, 0, 0, -49.75569)
 inputs_active = false
 padding_left_canva_estado = 400
 printConsole = false
+charPersonajePathFolder = "res://DRAGONCHARACTERS/TEMPCHAR"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+offset_left = 941.0
+offset_top = 569.0
+offset_right = 1102.0
+offset_bottom = 610.0
+text = "Cambiar 2"
+
+[node name="Button2" type="Button" parent="CanvasLayer"]
+offset_left = 742.0
+offset_top = 571.0
+offset_right = 903.0
+offset_bottom = 612.0
+text = "Cambiar 1"
+
+[connection signal="button_down" from="CanvasLayer/Button" to="." method="_on_button_button_down"]
+[connection signal="button_down" from="CanvasLayer/Button2" to="." method="_on_button_2_button_down"]

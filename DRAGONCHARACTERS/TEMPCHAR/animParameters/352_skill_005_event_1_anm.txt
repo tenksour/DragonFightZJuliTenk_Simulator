@@ -1,0 +1,2 @@
+1.04	invocar_hit_combo	true	null
+1.04	invocar_golpe_fuerte	true	root

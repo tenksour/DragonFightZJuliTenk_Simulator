@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://bnw68q7mpnfpc"]
+
+[ext_resource type="Texture2D" uid="uid://dbsdhkvfj2ak2" path="res://Efectos/aspas_particle/muzzle_03.png" id="1_402ow"]
+
+[sub_resource type="Gradient" id="Gradient_krl54"]
+offsets = PackedFloat32Array(0, 0.5260417, 0.7291667, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_cmhe6"]
+gradient = SubResource("Gradient_krl54")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cba2v"]
+particle_flag_align_y = true
+direction = Vector3(0, 0, 0)
+spread = 180.0
+initial_velocity_min = 10.15
+initial_velocity_max = 10.15
+gravity = Vector3(0, 21.58, 0)
+color_ramp = SubResource("GradientTexture1D_cmhe6")
+anim_speed_min = 4.6
+anim_speed_max = 4.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b1iam"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.99999994, 0.6840632, 0.38453168, 1)
+albedo_texture = ExtResource("1_402ow")
+billboard_keep_scale = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_0wtjg"]
+material = SubResource("StandardMaterial3D_b1iam")
+size = Vector2(50, 50)
+
+[node name="aspas_particle" type="GPUParticles3D"]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+amount = 7
+lifetime = 1.82
+speed_scale = 5.22
+explosiveness = 0.83
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_cba2v")
+draw_pass_1 = SubResource("QuadMesh_0wtjg")

@@ -1,5 +1,14 @@
 @tool
 extends Node3D
+var kiblast_res=preload("res://Efectos/ki_blast_simple.tscn")
+var golpe_fuerte_effect_res=preload("res://Efectos/gole_fuerte_effect.tscn")
+var _kiblast:KiBlastSimple
+var _golpe_fuerte_effect_res:Node3D
+func _ready() -> void:
+	_kiblast=kiblast_res.instantiate()
+	_golpe_fuerte_effect_res=golpe_fuerte_effect_res.instantiate()
+	pass
+@onready var character:CharacterPrin=self.get_parent()
 @export var invocarGolpeSimpleArmLeft=false:
 	set(_value):
 		invocarGolpeSimpleArmLeft = _value
@@ -42,8 +51,18 @@ extends Node3D
 		onActivarSonidoViento(_value)
 	get:
 		return activarSonidoViento
-		
-
+@export var activar_disparar_efecto_right_arm=false:
+	set(_value):
+		activar_disparar_efecto_right_arm = _value
+		onActivar_disparar_efecto_right_arm(_value)
+	get:
+		return activar_disparar_efecto_right_arm	
+@export var activar_disparar_efecto_left_arm=false:
+	set(_value):
+		activar_disparar_efecto_left_arm = _value
+		onActivar_disparar_efecto_left_arm(_value)
+	get:
+		return activar_disparar_efecto_left_arm	
 func onInvocarGolpeSimpleArmLeft(value):
 	if !is_node_ready():
 		return
@@ -51,6 +70,12 @@ func onInvocarGolpeSimpleArmLeft(value):
 	print("..onInvocarGolpeSimpleArmLeft")
 	if value and $"../temp_audios/golpe_simple"!=null:
 		$"../temp_audios/golpe_simple".play()
+		var effect=preload("res://Efectos/golpe_simple_effect.tscn")
+		effect=effect.instantiate()
+		character.get_parent().add_child(effect)
+		var posebone=character.getPositionGlobalFromBone("045_EFFECT_L")
+		effect.global_position=posebone
+		effect.iniciar()
 	pass
 func onInvocarGolpeSimpleArmRight(value):
 	if !is_node_ready():
@@ -59,6 +84,12 @@ func onInvocarGolpeSimpleArmRight(value):
 	print("..onInvocarGolpeSimpleArmLeft")
 	if value and $"../temp_audios/golpe_simple"!=null:
 		$"../temp_audios/golpe_simple".play()
+		var effect=preload("res://Efectos/golpe_simple_effect.tscn")
+		effect=effect.instantiate()
+		character.get_parent().add_child(effect)
+		var posebone=character.getPositionGlobalFromBone("031_EFFECT_R")
+		effect.global_position=posebone
+		effect.iniciar()
 	pass
 func onInvocarGolpeFuerteArmRight(value):
 	if !is_node_ready():
@@ -66,6 +97,12 @@ func onInvocarGolpeFuerteArmRight(value):
 	$"../".callTemblor2()
 	if value and $"../temp_audios/golpe_fuerte"!=null:
 		$"../temp_audios/golpe_fuerte".play()
+		var golpefuerteeffect=preload("res://Efectos/gole_fuerte_effect.tscn")
+		golpefuerteeffect=golpefuerteeffect.instantiate()
+		character.get_parent().add_child(golpefuerteeffect)
+		var posebone=character.getPositionGlobalFromBone("016_BELLY")
+		golpefuerteeffect.global_position=posebone
+		golpefuerteeffect.iniciar()
 	pass
 func onInvocarGolpeFuerteArmLeft(value):
 	if !is_node_ready():
@@ -73,6 +110,13 @@ func onInvocarGolpeFuerteArmLeft(value):
 	$"../".callTemblor2()
 	if value and $"../temp_audios/golpe_fuerte"!=null:
 		$"../temp_audios/golpe_fuerte".play()
+		
+		var golpefuerteeffect=preload("res://Efectos/gole_fuerte_effect.tscn")
+		golpefuerteeffect=golpefuerteeffect.instantiate()
+		character.get_parent().add_child(golpefuerteeffect)
+		var posebone=character.getPositionGlobalFromBone("016_BELLY")
+		golpefuerteeffect.global_position=posebone
+		golpefuerteeffect.iniciar()
 	pass
 func onInvocarGolpeFuerteRoot(value):
 	if !is_node_ready():
@@ -80,6 +124,12 @@ func onInvocarGolpeFuerteRoot(value):
 	$"../".callTemblor2()
 	if value and $"../temp_audios/golpe_fuerte"!=null:
 		$"../temp_audios/golpe_fuerte".play()
+		var golpefuerteeffect=preload("res://Efectos/gole_fuerte_effect.tscn")
+		golpefuerteeffect=golpefuerteeffect.instantiate()
+		character.get_parent().add_child(golpefuerteeffect)
+		var posebone=character.getPositionGlobalFromBone("016_BELLY")
+		golpefuerteeffect.global_position=posebone
+		golpefuerteeffect.iniciar()
 	pass
 func onActivarColisionGolpes(value):
 	if !is_node_ready():
@@ -117,4 +167,40 @@ func onActivarSonidoViento(value):
 	#$"../".callTemblor2()
 	#if value and $"../temp_audios/golpe_fuerte"!=null:
 		#$"../temp_audios/golpe_fuerte".play()
+	pass
+func onActivar_disparar_efecto_left_arm(value):
+	if !is_node_ready():
+		return
+	if value:
+
+
+		var kiblast:KiBlastSimple=_kiblast.duplicate()
+		var pose_left_arm=character.getPositionGlobalFromBone("045_EFFECT_L")
+		kiblast.global_position=pose_left_arm
+		character.get_parent().add_child(kiblast)	
+		kiblast.global_rotation=character.characterPivot.global_rotation
+		kiblast.nodeIgnoreColision=character
+		if character.characterTarget:
+			kiblast.iniciar(character.characterTarget)
+		else:
+			kiblast.iniciar(null)
+	pass
+func onActivar_disparar_efecto_right_arm(value):
+	if !is_node_ready():
+		return
+	if value:
+
+		
+		var kiblast:KiBlastSimple=_kiblast.duplicate()
+		var pose_left_arm=character.getPositionGlobalFromBone("031_EFFECT_R")
+		
+		kiblast.global_position=pose_left_arm
+		
+		character.get_parent().add_child(kiblast)	
+		kiblast.global_rotation=character.characterPivot.global_rotation
+		kiblast.nodeIgnoreColision=character
+		if character.characterTarget:
+			kiblast.iniciar(character.characterTarget)
+		else:
+			kiblast.iniciar(null)
 	pass

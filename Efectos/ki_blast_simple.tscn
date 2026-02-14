@@ -1,0 +1,296 @@
+[gd_scene load_steps=16 format=3 uid="uid://cniv4qj5pg5m6"]
+
+[ext_resource type="Script" uid="uid://kh8lm6f8gj0c" path="res://Efectos/ki_blast_simple.gd" id="1_20rgb"]
+[ext_resource type="AudioStream" uid="uid://bq1vk3c17ejsy" path="res://audios/ki_lanzamiento.mp3" id="2_aa8xt"]
+[ext_resource type="AudioStream" uid="uid://c7pur08s363d" path="res://audios/ki_colision.mp3" id="3_jp0oh"]
+[ext_resource type="PackedScene" uid="uid://cx63m6pt4r8ld" path="res://Efectos/fuego_explosion_particle/particle_explosion_fuego.tscn" id="4_jp0oh"]
+[ext_resource type="PackedScene" uid="uid://y7c1q2kucgs2" path="res://Efectos/luz_parpadeante_particle/luzparpadeante.tscn" id="5_cpwxu"]
+[ext_resource type="PackedScene" uid="uid://bnw68q7mpnfpc" path="res://Efectos/aspas_particle/aspas_particle.tscn" id="6_7bgqg"]
+[ext_resource type="PackedScene" uid="uid://j8qx3q6ku2ub" path="res://Efectos/estrellitas_particle/estrellitas_particle.tscn" id="7_88j35"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_h3jnh"]
+radial_segments = 10
+rings = 5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_20rgb"]
+albedo_color = Color(1.269618, 1.269618, 1.269618, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_20rgb"]
+size = Vector3(0.265, 0.41, 1.815)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_35s2j"]
+radius = 0.001
+
+[sub_resource type="Animation" id="Animation_7bgqg"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("particle_explosion_fuego:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("colision:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("luzparpadeante_particle:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("lanzamiento:playing")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("aspas_particle:emitting")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("estrellitas_particle:emitting")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("aspas_particle2:emitting")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_cpwxu"]
+resource_name = "colision"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("particle_explosion_fuego:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("colision:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("luzparpadeante_particle:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.17),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("aspas_particle2:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_88j35"]
+resource_name = "lanzamiento"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("luzparpadeante_particle:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("lanzamiento:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("aspas_particle:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("estrellitas_particle:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("aspas_particle2:emitting")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_88j35"]
+_data = {
+&"RESET": SubResource("Animation_7bgqg"),
+&"colision": SubResource("Animation_cpwxu"),
+&"lanzamiento": SubResource("Animation_88j35")
+}
+
+[node name="ki_blast_simple" type="Node3D"]
+script = ExtResource("1_20rgb")
+speed = 210.0
+turn_speed = 16.0
+initial_curve_strength = 0.11
+curve_duration = 0.12
+timeLife = 10
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.4, 0, 0, 0, 2.4, 0, 0, 0, 2.4, 0, 0, 0)
+visible = false
+mesh = SubResource("SphereMesh_h3jnh")
+surface_material_override/0 = SubResource("StandardMaterial3D_20rgb")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.4, 0, 0, 0, 2.4, 0, 0, 0, 2.4, 0, 0, 2.675921)
+visible = false
+mesh = SubResource("BoxMesh_20rgb")
+surface_material_override/0 = SubResource("StandardMaterial3D_20rgb")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_35s2j")
+
+[node name="lanzamiento" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_aa8xt")
+
+[node name="colision" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_jp0oh")
+
+[node name="particle_explosion_fuego" parent="." instance=ExtResource("4_jp0oh")]
+transform = Transform3D(7.68, 0, 0, 0, 7.68, 0, 0, 0, 7.68, 0, 0, 0)
+emitting = false
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_88j35")
+}
+
+[node name="luzparpadeante_particle" parent="." instance=ExtResource("5_cpwxu")]
+transform = Transform3D(27.65, 0, 0, 0, 27.65, 0, 0, 0, 27.65, 0, 0, 0)
+emitting = false
+
+[node name="aspas_particle" parent="." instance=ExtResource("6_7bgqg")]
+transform = Transform3D(0.25, 0, 0, 0, -1.0927847e-08, 0.25, 0, -0.25, -1.0927847e-08, 0, 0, 0)
+emitting = false
+one_shot = true
+explosiveness = 0.96
+
+[node name="aspas_particle2" parent="." instance=ExtResource("6_7bgqg")]
+transform = Transform3D(0.3, 0, 0, 0, -3.5406224e-08, -0.3, 0, 0.81, -1.3113417e-08, 0, 0, 4.3932934)
+visible = false
+emitting = false
+amount = 3
+lifetime = 1.61
+speed_scale = 2.42
+explosiveness = 0.96
+
+[node name="estrellitas_particle" parent="." instance=ExtResource("7_88j35")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+emitting = false
+lifetime = 1.16
+one_shot = true

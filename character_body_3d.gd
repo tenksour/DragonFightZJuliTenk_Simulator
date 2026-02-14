@@ -49,6 +49,7 @@ var mode_camera=1
 ##Para agarre del pie tipo goku poner true
 #@export var boneThrowCurrent=false#para agarre del pie se debe poner true
 #@export var boneThrow="015_HEEL_L"
+@export var speed_scale_animation=2.5
 func prepareFromGLB():
 	characterImportedSkeleton=$Pivot/Node3D/personaje_glb/Armature/Skeleton3D
 	animationPlayer=$Pivot/Node3D/personaje_glb/AnimationPlayer
@@ -77,7 +78,7 @@ func _ready() -> void:
 		#characterPivot.get_node("Node3D").add_child(glb_instance)
 		animationPlayer=glb_instance.get_node("AnimationPlayer")
 		characterImportedSkeleton=glb_instance.get_node("Armature/Skeleton3D")
-	animationPlayer.speed_scale=2.5
+	animationPlayer.speed_scale=speed_scale_animation
 	if charPersonajePathFolder!="":
 		prepararAnimData(charPersonajePathFolder+"/animParameters")		
 	else:
@@ -170,8 +171,8 @@ func _physics_process(delta: float) -> void:
 	if estado=="normal" and direction == Vector3.ZERO:
 		var anim=animationPlayer.get_animation("000_ground_anm")
 		anim.loop_mode=Animation.LOOP_LINEAR
-		#var anim2=animationPlayer.get_animation("001_ground_tired_anm")
-		#anim2.loop_mode=Animation.LOOP_LINEAR
+		var anim2=animationPlayer.get_animation("001_ground_tired_anm")
+		anim2.loop_mode=Animation.LOOP_LINEAR
 		#animationTree.active=false
 		#animationPlayer.play("000_ground_anm",0.2)
 		#var dir2=Vector3.ZERO
@@ -206,14 +207,11 @@ func _physics_process(delta: float) -> void:
 		var animRight="007_move_far_r_loop_anm"
 		#var anim=animationPlayer.get_animation("003_move_far_loop_anm")
 		#anim.loop_mode=Animation.LOOP_LINEAR
-		if animationPlayer.has_animation(animFront):
-			animationPlayer.get_animation(animFront).loop_mode=Animation.LOOP_LINEAR
-		if animationPlayer.has_animation(animBack):
-			animationPlayer.get_animation(animBack).loop_mode=Animation.LOOP_LINEAR
-		if animationPlayer.has_animation(animLeft):
-			animationPlayer.get_animation(animLeft).loop_mode=Animation.LOOP_LINEAR
-		if animationPlayer.has_animation(animRight):
-			animationPlayer.get_animation(animRight).loop_mode=Animation.LOOP_LINEAR
+		
+		animationPlayer.get_animation(animFront).loop_mode=Animation.LOOP_LINEAR
+		animationPlayer.get_animation(animBack).loop_mode=Animation.LOOP_LINEAR
+		animationPlayer.get_animation(animLeft).loop_mode=Animation.LOOP_LINEAR
+		animationPlayer.get_animation(animRight).loop_mode=Animation.LOOP_LINEAR
 		var dir2=calcSimpleMoveTeclas(delta)
 		if dir2.x==1:
 			animationPlayer.play(animRight,1)
@@ -468,6 +466,13 @@ func callSimpleDamage(multiplyDamage:float,iniciadorOponente:Node3D=null):
 	vida-=1*multiplyDamage
 	$estados/simple_damage.iniciar_damage2(multiplyDamage,isfront)
 	$temp_audios/golpe_simple.play()
+	
+	var effect=preload("res://Efectos/golpe_simple_effect.tscn")
+	effect=effect.instantiate()
+	get_parent().add_child(effect)
+	effect.iniciar()
+	var posebone=getPositionGlobalFromBone("016_BELLY")
+	effect.global_position=posebone
 func callDamageFuerteChargue(multiplyDamage:float,iniciadorOponente:Node3D=null):
 	#$nodo_auxiliar.emitirParticulaGolpeSimple()
 	
@@ -477,6 +482,12 @@ func callDamageFuerteChargue(multiplyDamage:float,iniciadorOponente:Node3D=null)
 	vida-=1*multiplyDamage
 	$estados/charge_fuerte_damage.iniciar_damage(multiplyDamage,iniciadorOponente,isfront)
 	$temp_audios/golpe_fuerte.play()
+	var golpefuerteeffect=preload("res://Efectos/gole_fuerte_effect.tscn")
+	golpefuerteeffect=golpefuerteeffect.instantiate()
+	get_parent().add_child(golpefuerteeffect)
+	golpefuerteeffect.iniciar()
+	var posebone=getPositionGlobalFromBone("016_BELLY")
+	golpefuerteeffect.global_position=posebone
 func callDamageAturdir(multiplyDamage:float,iniciadorOponente:Node3D=null):
 	#$nodo_auxiliar.emitirParticulaGolpeSimple()
 	
@@ -486,6 +497,12 @@ func callDamageAturdir(multiplyDamage:float,iniciadorOponente:Node3D=null):
 	vida-=1*multiplyDamage
 	$estados/aturdir_damage.iniciar_damage(multiplyDamage,iniciadorOponente,isfront)
 	$temp_audios/golpe_medio.play()
+	var effect=preload("res://Efectos/golpe_simple_effect.tscn")
+	effect=effect.instantiate()
+	get_parent().add_child(effect)
+	effect.iniciar()
+	var posebone=getPositionGlobalFromBone("016_BELLY")
+	effect.global_position=posebone
 func callDamageFuerteRolling(multiplyDamage:float,iniciadorOponente:Node3D=null):
 	#$nodo_auxiliar.emitirParticulaGolpeSimple()
 	
@@ -495,6 +512,12 @@ func callDamageFuerteRolling(multiplyDamage:float,iniciadorOponente:Node3D=null)
 	vida-=1*multiplyDamage
 	$estados/rolling_fuerte_damage.iniciar_damage(multiplyDamage,iniciadorOponente,isfront)
 	$temp_audios/golpe_medio.play()
+	var effect=preload("res://Efectos/golpe_simple_effect.tscn")
+	effect=effect.instantiate()
+	get_parent().add_child(effect)
+	effect.iniciar()
+	var posebone=getPositionGlobalFromBone("016_BELLY")
+	effect.global_position=posebone
 func is_in_front(of_body: Node3D, target: Node3D) -> bool:
 	# Forward del personaje (Godot usa -Z como forward)
 	var forward: Vector3 = -of_body.global_transform.basis.z.normalized()
@@ -655,7 +678,30 @@ func prepararAnimData(pathFolderAnimParameters="res://DRAGONCHARACTERS/BASECHARA
 			anim.value_track_set_update_mode(track_activarSonidoViento_index,Animation.UPDATE_DISCRETE)
 			#anim.track_set_interpolation_type(track_left_index, Animation.UPDATE_DISCRETE)
 			#anim.track_set_update_mode(track_left_index, Animation.UPDATE_DISCRETE)
+			
+			var track_activar_disparar_efecto_left_arm_index := anim.add_track(Animation.TYPE_VALUE)
+			anim.track_set_interpolation_type(track_activar_disparar_efecto_left_arm_index, Animation.INTERPOLATION_NEAREST)
+			anim.track_set_path(track_activar_disparar_efecto_left_arm_index, "eventos_auxiliares:activar_disparar_efecto_left_arm")
+			anim.value_track_set_update_mode(track_activar_disparar_efecto_left_arm_index,Animation.UPDATE_DISCRETE)
+			var track_activar_disparar_efecto_right_arm_index := anim.add_track(Animation.TYPE_VALUE)
+			anim.track_set_interpolation_type(track_activar_disparar_efecto_right_arm_index, Animation.INTERPOLATION_NEAREST)
+			anim.track_set_path(track_activar_disparar_efecto_right_arm_index, "eventos_auxiliares:activar_disparar_efecto_right_arm")
+			anim.value_track_set_update_mode(track_activar_disparar_efecto_right_arm_index,Animation.UPDATE_DISCRETE)
 			for lin in lineas:
+				if lin.split("\t")[1]=="disparar_efecto":
+					var time=float(lin.split("\t")[0])
+					var value=lin.split("\t")[3]
+					if value=="arm_right":
+						anim.track_insert_key(track_activar_disparar_efecto_right_arm_index, time, true)
+					if value=="arm_left":
+						anim.track_insert_key(track_activar_disparar_efecto_left_arm_index, time, true)
+					#if value=="leg_right":
+						#anim.track_insert_key(track_activar_disparar_efecto_right_arm_index, time, true)
+					#if value=="leg_left":
+						#anim.track_insert_key(track_activar_disparar_efecto_left_arm_index, time, true)
+					#else:
+						#anim.track_insert_key(track_activarSonidoViento_index, time, true)
+					key_frames+=1
 				if lin.split("\t")[1]=="invocar_sonido_viento":
 					var time=float(lin.split("\t")[0])
 					var value=lin.split("\t")[2]
@@ -809,5 +855,22 @@ func imprimir_nodos(nodo: Node, nivel: int = 0) -> void:
 func activarCamaraOriginal():
 	camera.make_current()
 func activarCamaraThrow():
-	$Camera3DThrow.make_current()
+	#$Camera3DThrow.make_current()
+	$Pivot/Node3D2/Camera3D.make_current()
+	pass
+## util para aplicar root motion o perseguir con una aceleracion sin pasarse
+func calcularDirectionAcelerataSinPasarse(vectorPosicionFinal:Vector3,vectorPosicionactual:Vector3,aceleration=30):
+	var direction=vectorPosicionFinal-vectorPosicionactual
+	var distance = direction.length()
+	direction=direction.normalized()*aceleration
+	var step = min(distance, aceleration)
+	return direction*step
+	#charenemi.velocity=direction*step
+	#charenemi.move_and_slide()
+	pass
+func callSoundTeleport():
+	$temp_audios/teleport.play()
+func enfocarCamaraInstantaneo():
+	$area_targering.time=0
+	$area_targering.moverInstantaneo=true
 	pass

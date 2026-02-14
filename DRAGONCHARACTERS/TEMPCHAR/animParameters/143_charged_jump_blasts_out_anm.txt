@@ -1,0 +1,1 @@
+0.38	disparar_efecto	true	arm_right

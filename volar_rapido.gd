@@ -10,7 +10,11 @@ var animationNamesLoop=["013_dash_f_loop_anm",
 "019_dash_r_loop_anm",
 "013_dash_f_loop_anm"
 ]
-
+var animationBlasts=["119_dash_blasts_f_anm",
+"120_dash_blasts_l_anm",
+"121_dash_blasts_r_anm",
+"119_dash_blasts_f_anm"]
+var blastActivo=false
 var animationGolpeIn="092_rush_strike_f_in_anm"
 var animationGolpeChargue="093_rush_strike_f_loop_anm"
 var inicio_golpe=false
@@ -54,6 +58,8 @@ func _physics_process(delta: float) -> void:
 	if activo:
 		if character.is_action_just_pressed("square"):
 			inicio_golpe=true
+		if character.is_action_just_pressed("triangle"):
+			blastActivo=true
 		var giro_velocity=velocidad_giro
 		
 		#Si ya inicio a cargar el golpe
@@ -89,7 +95,12 @@ func _physics_process(delta: float) -> void:
 		character.move_and_slide()
 		if animacion_first_finished and !inicio_golpe:
 			character.animationPlayer.get_animation(getAnimNameLoop()).loop_mode=Animation.LOOP_LINEAR
-			character.animationPlayer.play(getAnimNameLoop(),1.6)
+			if blastActivo:
+				character.reiniciarBlendAnimationPlayer()
+				character.animationPlayer.play(getAnimNameBlatsLoop(),0.2)
+				character.getAnimationPlayerAux().play(getAnimNameBlatsLoop())
+			else:
+				character.animationPlayer.play(getAnimNameLoop(),1.6)
 		else: if inicio_golpe and !inicio_golpe_chargue:
 			character.reiniciarBlendAnimationPlayer()
 			character.animationPlayer.play(animationGolpeIn,0.2)
@@ -103,6 +114,8 @@ func _physics_process(delta: float) -> void:
 		#print("iniciado: "+str(iniciado))
 	pass
 func onAnimationFirshFinished(animName):
+	if animationBlasts.has(animName):
+		blastActivo=false
 	if animName==animationGolpeChargue:
 		onlyDetener()
 		$"../dash_square_fuerte_out".iniciar()
@@ -129,6 +142,21 @@ func getAnimNameLoop():
 		pass
 	return animationNamesLoop[0]
 	pass
+func getAnimNameBlatsLoop():
+	if character.get_pivot_look_relative_to_camera(character.camera)=="FRONT":
+		return animationBlasts[0]
+		pass
+	if character.get_pivot_look_relative_to_camera(character.camera)=="BACK":
+		return animationBlasts[3]
+		pass
+	if character.get_pivot_look_relative_to_camera(character.camera)=="LEFT":
+		return animationBlasts[1]
+		pass
+	if character.get_pivot_look_relative_to_camera(character.camera)=="RIGHT":
+		return animationBlasts[2]
+		pass
+	return animationBlasts[0]
+	pass
 func getAnimNameEntrada():
 	if character.get_pivot_look_relative_to_camera(character.camera)=="FRONT":
 		return animationNamesEntrada[0]
@@ -146,6 +174,7 @@ func getAnimNameEntrada():
 	pass
 func postIniciar():
 	character.callSoundGolpeVueloRapido()
+	blastActivo=false
 	inicio_golpe=false
 	inicio_golpe_chargue=false
 	animacion_first_finished=false

@@ -2,13 +2,14 @@ extends CharacterEstadoGeneric
 var count_anim=0
 var animacion_first_finished=false
 var animationName="094_rush_strike_f_out_anm"
-@export var velocidad_root_motion=60
+@export var velocidad_root_motion=40
 var last_root_pos: Vector3=Vector3.ZERO
 var prev_root_transform = Transform3D.IDENTITY
 var skeleton_fake:Skeleton3D
 var pivot_suelto:Node3D
 var time_preload=0
 var tipo_damage=3 #3 mandar a volar, 2 mandar volar aturdir , 1 golpe debil
+var colisiono=false
 func _ready() -> void:
 	super._ready()
 
@@ -30,7 +31,6 @@ func _physics_process(delta: float) -> void:
 	#if character.is_action_just_released("cross") and activo:
 		#detener()
 	if activo:
-		pass
 		#var skeleton=character.characterImportedSkeleton
 		#var root_bone_idx=skeleton.find_bone("000_NULL")
 		#var current_root_transform = skeleton.get_bone_global_pose(root_bone_idx)
@@ -51,12 +51,19 @@ func _physics_process(delta: float) -> void:
 		
 		#character.characterPivot.look_at(character.characterTarget.global_position,Vector3.UP)
 		var position_bone=character.getPositionGlobalFromBone2("000_NULL",skeleton_fake)
-		var direction=position_bone-character.global_position
-		##direction.y+=velocidad
+		#var direction=position_bone-character.global_position
+		###direction.y+=velocidad
+		#character.anularPositionAnimationBone("000_NULL")
+		#direction=direction.normalized()*velocidad_root_motion
+		#character.velocity=direction
+		#character.move_and_slide()
+		var direction=character.calcularDirectionAcelerataSinPasarse(position_bone,character.global_position,velocidad_root_motion)
 		character.anularPositionAnimationBone("000_NULL")
-		direction=direction.normalized()*velocidad_root_motion
+		if colisiono:
+			direction=direction/5
 		character.velocity=direction
 		character.move_and_slide()
+		
 		#var current_pose = character.characterImportedSkeleton.get_bone_global_pose(character.characterImportedSkeleton.find_bone("000_NULL"))
 		#var current_pos = current_pose.origin
 		## Delta de movimiento del hueso
@@ -98,12 +105,14 @@ func onAnimationFinished(animName):
 	#detener()
 	pass
 func postIniciar():
+	colisiono=false
 	character.callSoundGolpeViento()
 	print("Post iniciar: "+estadoName)
 	pivot_suelto=character.characterPivot.duplicate()
 	character.get_parent().add_child(pivot_suelto)
 	pivot_suelto.visible=false
 	pivot_suelto.global_position=character.characterPivot.global_position
+	pivot_suelto.global_rotation=character.characterPivot.global_rotation
 	pivot_suelto.get_node("Node3D/personaje_glb/AnimationPlayer").play(animationName,0.2)
 	skeleton_fake=pivot_suelto.get_node("Node3D/personaje_glb/Armature/Skeleton3D")
 	character.reiniciarBlendAnimationPlayer()
@@ -147,6 +156,7 @@ func _on_area_arm_attack_body_entered(body: Node3D) -> void:
 	if body==character:
 		return
 	if body is CharacterPrin:
+		colisiono=true
 		character.callTemblor2()
 		print("time anim aux: "+str(character.get_node("AnimationPlayer").current_animation_position))
 		print("Llamando daño desde: "+character.name +" a "+ body.name)

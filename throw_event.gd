@@ -10,6 +10,8 @@ var timeLife=10
 @export var aceleration=5
 var charEnemy:CharacterPrin
 var animationPlayerClone:AnimationPlayer
+##0 tipo mandar a volar frente ##1 mandar volar espalda
+@export var tipoSalida=0
 func _ready() -> void:
 	super._ready()
 
@@ -36,6 +38,7 @@ func _physics_process(delta: float) -> void:
 			charenemi.enableColision(character.aciveColisionEnemyThrow)
 			#charenemi.global_position=character.global_position
 			charenemi.characterPivot.global_rotation=character.characterPivot.global_rotation
+
 			#charenemi.global_position=pos_bone_enemy
 			#var pos_bone_enemy_central=character.get_bone_global_rest_position(charenemi.characterImportedSkeleton,nombre_hueso_pivot)
 			var pos_bone_enemy_central=charenemi.getPositionGlobalFromBone(nombre_hueso_pivot)
@@ -44,12 +47,16 @@ func _physics_process(delta: float) -> void:
 			#var posicion_final=pos_bone_enemy-diferencia
 			var posicion_final=pos_bone_enemy-diferencia_hueso
 			#charenemi.global_position=pos_bone_enemy-diferencia_hueso
-			var direction=posicion_final-charenemi.global_position
-			var distance = direction.length()
-			direction=direction.normalized()*30
-			var step = min(distance, 30)
-			#charenemi.global_rotation=rotation_enemy
-			charenemi.velocity=direction*step
+			
+			#var direction=posicion_final-charenemi.global_position
+			#var distance = direction.length()
+			#direction=direction.normalized()*30
+			#var step = min(distance, 30)
+			#charenemi.velocity=direction*step
+			charenemi.move_and_slide()
+			var direction=character.calcularDirectionAcelerataSinPasarse(posicion_final,charenemi.global_position,30)
+			##charenemi.global_rotation=rotation_enemy
+			charenemi.velocity=direction
 			charenemi.move_and_slide()
 		pass
 	pass
@@ -84,7 +91,6 @@ func postIniciar():
 		charEnemy.animationPlayer.pause()
 		
 		animationPlayerClone.play(animationNameBack)
-		
 		var libraryAuxCharEnemy=charEnemy.getAnimationPlayerAux().get_animation_library("")
 		var animationAux=character.getAnimationPlayerAux().get_animation(animationNameBack)
 		if animationAux:
@@ -102,7 +108,7 @@ func postIniciar():
 
 	
 	conectarSeñalAnimationPlayer(onAnimationFinished)
-	#character.activarCamaraThrow()
+	character.activarCamaraThrow()
 	pass
 func addCountAnim():
 	pass
@@ -113,6 +119,7 @@ func onlyDetener():
 	if charEnemy!=null:
 		charEnemy.enableColision(true)
 		charEnemy.estado=estadoNameDetenerReturnNotFloor
+		charEnemy.callDamageFuerteChargue(1,character)
 	if animationPlayerClone!=null:
 		animationPlayerClone.queue_free()
 	desconectarSeñalAnimationPlayer(onAnimationFinished)

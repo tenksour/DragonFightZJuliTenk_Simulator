@@ -1,0 +1,3 @@
+0.25	disparar_efecto	true	arm_right
+0.63	disparar_efecto	true	arm_left
+1.08	disparar_efecto	true	arm_right

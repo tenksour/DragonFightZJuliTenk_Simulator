@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://cx63m6pt4r8ld"]
+
+[ext_resource type="Texture2D" uid="uid://bytiy80qcwhs6" path="res://Efectos/fuego_explosion_particle/Effect.png" id="1_soqwh"]
+
+[sub_resource type="Gradient" id="Gradient_thsop"]
+offsets = PackedFloat32Array(0, 0.542169, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ews2q"]
+gradient = SubResource("Gradient_thsop")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jdo1t"]
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+angular_velocity_max = 180.0
+gravity = Vector3(0, -2, 0)
+tangential_accel_min = 3.0
+tangential_accel_max = 3.0
+color = Color(0.55, 0.55, 0.55, 1)
+color_ramp = SubResource("GradientTexture1D_ews2q")
+anim_speed_max = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_re00j"]
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
+albedo_texture = ExtResource("1_soqwh")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 3
+particles_anim_v_frames = 3
+particles_anim_loop = false
+proximity_fade_enabled = true
+proximity_fade_distance = 0.3
+
+[sub_resource type="QuadMesh" id="QuadMesh_vqi7v"]
+material = SubResource("StandardMaterial3D_re00j")
+
+[node name="particle_explosion_fuego" type="GPUParticles3D"]
+amount = 7
+lifetime = 0.6
+explosiveness = 1.0
+fixed_fps = 0
+interpolate = false
+local_coords = true
+draw_order = 1
+process_material = SubResource("ParticleProcessMaterial_jdo1t")
+draw_pass_1 = SubResource("QuadMesh_vqi7v")

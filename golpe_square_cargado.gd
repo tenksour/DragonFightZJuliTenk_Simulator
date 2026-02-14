@@ -4,13 +4,18 @@ var animacion_first_finished=false
 var animationNameIn="074_charged_strike_f_in_anm"
 var animationNameChargue="075_charged_strike_f_loop_anm"
 var animationNameOut="076_charged_strike_f_out_anm"
-@export var velocidad_root_motion=50
+@export var velocidad_root_motion=70
 var last_root_pos: Vector3=Vector3.ZERO
 var prev_root_transform = Transform3D.IDENTITY
 var skeleton_fake:Skeleton3D
 var pivot_suelto:Node3D
 var time_preload=0
 var tipo_golpe=1
+
+##indica Si la 2da animacion de cargar el golpe, continuar el rootmotion
+##Si esta falso, la animacion original debe continuar desde el punto anterior, entonces no se setea su position
+## si esta true, la animacion original su HUESO ROOT debe reiniciarse , para que por codigo se setee su position global con el del root motion
+var continuar_root_motion=false
 func _ready() -> void:
 	super._ready()
 
@@ -63,10 +68,17 @@ func _physics_process(delta: float) -> void:
 		
 		#character.characterPivot.look_at(character.characterTarget.global_position,Vector3.UP)
 		var position_bone=character.getPositionGlobalFromBone2("000_NULL",skeleton_fake)
-		var direction=position_bone-character.global_position
-		##direction.y+=velocidad
+		
+		
+		#var direction=position_bone-character.global_position
+		###direction.y+=velocidad
+		#character.anularPositionAnimationBone("000_NULL")
+		#direction=direction.normalized()*velocidad_root_motion
+		#character.velocity=direction
+		#character.move_and_slide()
+		
+		var direction=character.calcularDirectionAcelerataSinPasarse(position_bone,character.global_position,velocidad_root_motion)
 		character.anularPositionAnimationBone("000_NULL")
-		direction=direction.normalized()*velocidad_root_motion
 		character.velocity=direction
 		character.move_and_slide()
 		#var current_pose = character.characterImportedSkeleton.get_bone_global_pose(character.characterImportedSkeleton.find_bone("000_NULL"))
@@ -104,7 +116,8 @@ func onAnimationSecondFinished(animName):
 func onAnimationFinished(animName):
 	if animName==animationNameIn:
 		tipo_golpe=2
-		pivot_suelto.global_position=character.characterPivot.global_position
+		if continuar_root_motion:
+			pivot_suelto.global_position=character.characterPivot.global_position
 		character.animationPlayer.play(animationNameChargue,0.1)
 		pivot_suelto.get_node("Node3D/personaje_glb/AnimationPlayer").play(animationNameChargue,0.1)
 	if animationNameChargue==animName:

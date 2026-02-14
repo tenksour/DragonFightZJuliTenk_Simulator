@@ -1,0 +1,2 @@
+0.42	invocar_lineas_hueso	true	arm_right
+0.54	activar_bones_colision	false	null
